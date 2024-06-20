@@ -114,7 +114,7 @@ class TreeBox(WidgetWrap):
         self._outer_list = ListBox(self._walker)
         if focus is not None:
             self.set_focus(focus)
-        self.__super.__init__(self._outer_list)
+        super().__init__(self._outer_list)
 
     # Widget API
     def get_focus(self):
@@ -157,6 +157,17 @@ class TreeBox(WidgetWrap):
             return self._outer_list.keypress(size, key)
 
     # Collapse operations
+    def toggle_collapse_focussed(self):
+        """
+        Toggle collapse currently focussed position; works only if the underlying
+        tree allows it.
+        """
+        if implementsCollapseAPI(self._tree):
+            w, focuspos = self.get_focus()
+            self._tree.toggle_collapsed(focuspos)
+            self._walker.clear_cache()
+            self.refresh()
+
     def collapse_focussed(self):
         """
         Collapse currently focussed position; works only if the underlying
